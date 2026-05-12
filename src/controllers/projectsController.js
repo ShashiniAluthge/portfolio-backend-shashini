@@ -27,7 +27,7 @@ const getAllProjects = async (req, res) => {
             values.push(category);
         }
 
-        query += ` ORDER BY p.created_at DESC`;
+        query += ` ORDER BY p.created_at ASC`;
 
         const result = await pool.query(query, values);
         res.json(result.rows);
