@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const projectRoutes = require('./src/routes/projects');
 const categoryRoutes = require('./src/routes/categories');
+const technologyRoutes = require('./src/routes/technologies');
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/projects', projectRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/technologies', technologyRoutes);
+
 
 app.get('/', (req, res) => {
     res.json({ message: 'Portfolio API running' });
