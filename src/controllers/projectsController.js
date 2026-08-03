@@ -14,6 +14,7 @@ const getAllProjects = async (req, res) => {
         p.github_url,
         p.live_url,
         p.image_url,
+        p.project_type,
         p.created_at,
         c.name AS category_name,
         c.slug AS category_slug
@@ -47,6 +48,7 @@ const getProjectById = async (req, res) => {
         p.github_url,
         p.live_url,
         p.image_url,
+        p.project_type,
         p.created_at,
         c.name AS category_name,
         c.slug AS category_slug
@@ -66,7 +68,7 @@ const getProjectById = async (req, res) => {
 
 const createProject = async (req, res) => {
     try {
-        const { title, description, tech_stack, github_url, live_url, category_id } = req.body;
+        const { title, description, tech_stack, github_url, live_url, category_id, project_type } = req.body;
 
         const image_url = req.file ? req.file.path : null;
 
@@ -80,8 +82,8 @@ const createProject = async (req, res) => {
 
         const result = await pool.query(
             `INSERT INTO projects
-        (title, description, tech_stack, github_url, live_url, image_url, category_id)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+        (title, description, tech_stack, github_url, live_url, image_url, category_id, project_type)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
             [
                 title,
@@ -91,6 +93,7 @@ const createProject = async (req, res) => {
                 live_url || null,
                 image_url,
                 category_id,
+                project_type || null,
             ]
         );
         res.status(201).json(result.rows[0]);
@@ -119,6 +122,7 @@ const updateProject = async (req, res) => {
         const github_url = req.body.github_url || old.github_url;
         const live_url = req.body.live_url || old.live_url;
         const category_id = req.body.category_id || old.category_id;
+        const project_type = req.body.project_type || old.project_type;
 
         // handle tech_stack
         let tech_stack = old.tech_stack;
@@ -147,10 +151,10 @@ const updateProject = async (req, res) => {
         const result = await pool.query(
             `UPDATE projects
        SET title=$1, description=$2, tech_stack=$3, github_url=$4,
-           live_url=$5, image_url=$6, category_id=$7
-       WHERE id=$8
+           live_url=$5, image_url=$6, category_id=$7, project_type=$8
+       WHERE id=$9
        RETURNING *`,
-            [title, description, tech_stack, github_url, live_url, image_url, category_id, id]
+            [title, description, tech_stack, github_url, live_url, image_url, category_id, project_type, id]
         );
 
         res.json(result.rows[0]);
